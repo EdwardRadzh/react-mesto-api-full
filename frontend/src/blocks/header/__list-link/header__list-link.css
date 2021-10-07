@@ -1,0 +1,16 @@
+.header__list-link {
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    display: flex;
+    align-self: center;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.5s ease;
+  }
+  
+  .header__list-link:hover {
+    opacity: 0.5;
+  }

@@ -1,0 +1,19 @@
+.profile {
+    font-family: 'Inter', Arial, sans-serif;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    margin-top: 38.25px;
+    margin-bottom: 36px;
+}
+
+@media (min-width: 768px) {
+    .profile {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 150px;
+        margin-top: 36.25px;
+        margin-bottom: 47.25px;
+        
+    }
+}

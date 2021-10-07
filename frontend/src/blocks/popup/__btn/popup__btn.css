@@ -1,0 +1,37 @@
+.popup__btn {
+    border-radius: 2px;
+    border: 0;
+    background: #000000;
+    color: white;
+    font-family: inherit;
+    margin: 45px auto 25px auto;
+    width: 238px;
+    height: 46px;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+    font-size: 14px;
+    line-height: 16.94px;
+    font-weight: 400;
+}
+
+.popup__btn:hover {
+    opacity: .8;
+}
+
+@media(min-width: 1024px) {
+    .popup__btn {
+        width: 358px;
+        height: 54.5px;
+        font-size: 18px;
+        line-height: 21.78px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.popup__btn:disabled {
+    color: #C4C4C4;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, .2);
+    cursor: not-allowed;
+}
