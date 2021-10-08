@@ -108,7 +108,6 @@ export class Api {
 const api = new Api({
   baseUrl: 'https://api.radzhabov.students.nomoredomains.monster',
   headers: {
-    authorization: '81d77c87-7194-433b-a4bb-047f8939c4ec',
     'Content-Type': 'application/json'
   }
 });
