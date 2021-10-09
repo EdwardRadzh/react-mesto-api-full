@@ -1,5 +1,15 @@
 export const BASE_URL = 'https://api.radzhabov.students.nomoredomains.monster';
 
+export const logout = () => {
+    return fetch(`${BASE_URL}/logout`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-type': 'application/json',
+        }
+    })
+}
+
 export const register = (email, password) => {
     return fetch(`${BASE_URL}/signup`, {
         method: 'POST',

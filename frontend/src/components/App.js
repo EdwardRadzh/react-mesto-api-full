@@ -41,27 +41,23 @@ function App() {
     const [isInfoTooltip, setInfoTooltip] = React.useState({isOpen: false, successful: false});
 
     function handleTokenCheck() {
-        const token = localStorage.getItem("jwt");
-        
-        if (token) {
-            auth.checkToken(token)
-            .then((res) => {
-                if (res) {
-                setUserData({
-                    id: res.data._id,
-                    email: res.data.email,
-                });
-                setLoggedIn(true);
-                history.push("/");
-                } else {
-                localStorage.removeItem("jwt");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                history.push("/sign-in");
+    // const token = localStorage.getItem("jwt");
+        auth.checkToken()
+          .then((res) => {
+            if (res) {
+            setUserData({
+                id: res.data._id,
+                email: res.data.email,
             });
-        }
+            setLoggedIn(true);
+            history.push("/");
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            history.push("/sign-in");
+        });
+
     }
 
     React.useEffect(() => {
@@ -69,8 +65,11 @@ function App() {
     }, [loggedIn])
 
     function signOut() {
-    localStorage.removeItem("jwt");
+    // localStorage.removeItem("jwt");
+    auth.logout();
     setLoggedIn(false);
+    setCards([]);
+    setCurrentUser({})
     history.push("/sign-in");
     }
 

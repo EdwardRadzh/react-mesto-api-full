@@ -8,7 +8,7 @@ const cors = require('cors');
 
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const { login, createUser } = require('./controllers/users');
+const { login, logout, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -55,6 +55,8 @@ app.post('/signup',
     }),
   }),
   createUser);
+
+app.post('/logout', logout);
 
 app.use('/', auth, usersRouter);
 app.use('/', auth, cardsRouter);

@@ -33,6 +33,10 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
+const logout = (req, res) => {
+  res.clearCookie('jwt').send();
+};
+
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
@@ -154,4 +158,5 @@ module.exports = {
   updateUser,
   updateAvatar,
   getCurrentUser,
+  logout,
 };
