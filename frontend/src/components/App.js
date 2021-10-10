@@ -103,16 +103,16 @@ function App() {
     history.push("/sign-in");
     }
 
-    React.useEffect(() => {
-        Promise.all([api.getUserInfo(), api.getCards()])
-            .then(([userInfo, cardList]) => {
-                setCurrentUser(userInfo);
-                setCards(cardList)
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, [loggedIn]);
+    // React.useEffect(() => {
+    //     Promise.all([api.getUserInfo(), api.getCards()])
+    //         .then(([userInfo, cardList]) => {
+    //             setCurrentUser(userInfo);
+    //             setCards(cardList)
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         })
+    // }, [loggedIn]);
 
     //при загрузке если получаем пользователя то перенаправляем его
 //   React.useEffect(() => {
