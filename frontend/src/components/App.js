@@ -42,77 +42,74 @@ function App() {
 
     const [isInfoTooltip, setInfoTooltip] = React.useState({isOpen: false, successful: false});
 
-    // function handleTokenCheck() {
-    //     auth.checkToken()
-    //       .then((res) => {
-    //         if (res) {
-    //         setUserData({
-    //             id: res.data._id,
-    //             email: res.data.email,
-    //         });
-    //         setLoggedIn(true);
-    //         history.push("/");
-    //         }
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //         history.push("/sign-in");
-    //     });
-
-    // }
-
-    // React.useEffect(() => {
-    // handleTokenCheck();
-    // }, [loggedIn])
-
-    React.useEffect(() => {
-        const jwt = localStorage.getItem('jwt');
-
-        if (jwt) {
-            auth.getContent(jwt)
-                .then((res) => {
-                    setEmail(res.email);
-                    setLoggedIn(true);
-                    history.push('/');
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-    }, [loggedIn, history]);
-
-    React.useEffect(() => {
-        const jwt = localStorage.getItem('jwt');
-        if (jwt) {
-            auth.getContent(jwt).then((res) => {
-                if (res) {
-                    setEmail(res.email);
-                }
-                setLoggedIn(true);
+    function handleTokenCheck() {
+        const token = localStorage.getItem('jwt');
+        if (token) {
+            auth.checkToken(token)
+            .then((data) => {
+                setLoggedIn(true)
+                setEmail(data.email)
                 history.push('/');
             })
-                .catch(err => console.log(err))
+            .catch((err) => {
+                console.log(err);
+            history.push("/signin");
+            })
         }
-    }, [loggedIn, history])
+    }
+
+    React.useEffect(() => {
+    handleTokenCheck();
+    }, []);
+
+    // React.useEffect(() => {
+    //     const jwt = localStorage.getItem('jwt');
+
+    //     if (jwt) {
+    //         auth.getContent(jwt)
+    //             .then((res) => {
+    //                 setEmail(res.email);
+    //                 setLoggedIn(true);
+    //                 history.push('/');
+    //             })
+    //             .catch((err) => {
+    //                 console.log(err);
+    //             });
+    //     }
+    // }, [loggedIn, history]);
+
+    // React.useEffect(() => {
+    //     const jwt = localStorage.getItem('jwt');
+    //     if (jwt) {
+    //         auth.getContent(jwt).then((res) => {
+    //             if (res) {
+    //                 setEmail(res.email);
+    //             }
+    //             setLoggedIn(true);
+    //             history.push('/');
+    //         })
+    //             .catch(err => console.log(err))
+    //     }
+    // }, [loggedIn, history])
 
     function signOut() {
     localStorage.removeItem('jwt');
     setLoggedIn(false);
     setCards([]);
     setCurrentUser({})
-    history.push("/sign-in");
+    history.push("/signin");
     }
 
-    // React.useEffect(() => {
-    //     Promise.all([api.getUserInfo(), api.getCards()])
-    //         .then(([userInfo, cardList]) => {
-    //             setCurrentUser(userInfo);
-    //             setCards(cardList)
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         })
-    // }, [loggedIn]);
+    React.useEffect(() => {
+        Promise.all([api.getUserInfo(), api.getCards()])
+            .then(([userInfo, cardList]) => {
+                setCurrentUser(userInfo);
+                setCards(cardList)
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, [loggedIn]);
 
     //при загрузке если получаем пользователя то перенаправляем его
 //   React.useEffect(() => {
@@ -240,12 +237,11 @@ function App() {
     function handleLogin({ email, password }) {
         return auth.authorize(email, password)
           .then((res) => {
-            if (res && email) {
-              const jwt = res.token;
-              jwt && localStorage.setItem('jwt', jwt);
+            if (res.token) {
               setEmail(email);
               setLoggedIn(true);
-              history.push("/");
+              localStorage.setItem('jwt', res.token)
+              history.push('/');
             } else {
               throw new Error("Не удалось войти в аккаунт");
             }
@@ -265,7 +261,7 @@ function App() {
         .then((res) => {
             if(res) {
                 handleInfoTooltip(true);
-                history.push('/sign-in')
+                history.push('/signin')
             }
         })
         .catch((err) => {
@@ -301,12 +297,12 @@ function App() {
 
             <Switch>
 
-                <Route path="/sign-in">
+                <Route path="/signin">
                     <Login onLogin={handleLogin}
                     onLoginState={handleLoginState}/>
                 </Route>
 
-                <Route path="/sign-up">
+                <Route path="/signup">
                     <Register 
                     onLoginState={handleLoginState}
                     onRegister={handleRegister}
@@ -330,7 +326,7 @@ function App() {
                     {loggedIn ? (
                     <Redirect to="/" />
                     ) : (
-                    <Redirect to="/sign-in" />
+                    <Redirect to="/signin" />
                     )}
                 </Route>
 
