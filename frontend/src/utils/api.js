@@ -15,6 +15,7 @@ export class Api {
   getUserInfo() {
     return fetch(`${this._url}/users/me`, {
       method: 'GET',
+      credentials: 'include',
       headers: this._headers
     }).then(this._checkError)
   }
@@ -23,6 +24,7 @@ export class Api {
   getCards() {
     return fetch(`${this._url}/cards`, {
       method: 'GET',
+      credentials: 'include',
       headers: this._headers
     }).then(this._checkError)
   }
@@ -31,6 +33,7 @@ export class Api {
   setUserInfoChanges(data) {
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
@@ -43,6 +46,7 @@ export class Api {
   postCard(data) {
     return fetch(`${this._url}/cards`, {
       method: 'POST',
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
@@ -55,6 +59,7 @@ export class Api {
   setUserAvatar(data) {
     return fetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify({
         avatar: data.avatar
@@ -66,6 +71,7 @@ export class Api {
   deleteCard(data) {
     return fetch(`${this._url}/cards/${data}`, {
       method: 'DELETE',
+      credentials: 'include',
       headers: this._headers
     }).then(this._checkError)
   }
@@ -74,6 +80,7 @@ export class Api {
   deleteLike(data) {
     return fetch(`${this._url}/cards/likes/${data._id}`, {
       method: 'DELETE',
+      credentials: 'include',
       headers: this._headers,
     }).then(this._checkError)
   }
@@ -82,6 +89,7 @@ export class Api {
   setLike(data) {
     return fetch(`${this._url}/cards/likes/${data._id}`, {
       method: 'PUT',
+      credentials: 'include',
       headers: this._headers,
     }).then(this._checkError)
   }
@@ -99,6 +107,7 @@ export class Api {
   changeLikeCardStatus(data, isNotLiked) {
     return fetch(`${this._url}/cards/likes/${data}`, {
       method: isNotLiked ? "PUT" : "DELETE",
+      credentials: 'include',
       headers: this._headers,
     })
       .then(this._checkError)

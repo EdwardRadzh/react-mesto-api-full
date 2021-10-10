@@ -41,7 +41,6 @@ function App() {
     const [isInfoTooltip, setInfoTooltip] = React.useState({isOpen: false, successful: false});
 
     function handleTokenCheck() {
-    // const token = localStorage.getItem("jwt");
         auth.checkToken()
           .then((res) => {
             if (res) {
@@ -65,7 +64,6 @@ function App() {
     }, [loggedIn])
 
     function signOut() {
-    // localStorage.removeItem("jwt");
     auth.logout();
     setLoggedIn(false);
     setCards([]);
