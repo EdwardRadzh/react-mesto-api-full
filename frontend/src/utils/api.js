@@ -12,29 +12,38 @@ export class Api {
   }
 
   //Загрузка информации о пользователе с сервера
-  getUserInfo() {
+  getUserInfo(token) {
     return fetch(`${this._url}/users/me`, {
       method: 'GET',
-      credentials: 'include',
-      headers: this._headers
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    }
     }).then(this._checkError)
   }
 
   //Загрузка карточек с сервера
-  getCards() {
+  getCards(token) {
     return fetch(`${this._url}/cards`, {
       method: 'GET',
-      credentials: 'include',
-      headers: this._headers
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    }
     }).then(this._checkError)
   }
 
   //Редактирование профиля
-  setUserInfoChanges(data) {
+  setUserInfoChanges(data, token) {
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
-      credentials: 'include',
-      headers: this._headers,
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    },
       body: JSON.stringify({
         name: data.name,
         about: data.about
@@ -43,11 +52,14 @@ export class Api {
   }
 
   //Добавление новой карточки
-  postCard(data) {
+  postCard(data, token) {
     return fetch(`${this._url}/cards`, {
       method: 'POST',
-      credentials: 'include',
-      headers: this._headers,
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    },
       body: JSON.stringify({
         name: data.name,
         link: data.link
@@ -56,11 +68,14 @@ export class Api {
   }
 
   //Обновление аватара пользователя
-  setUserAvatar(data) {
+  setUserAvatar(data, token) {
     return fetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
-      credentials: 'include',
-      headers: this._headers,
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    },
       body: JSON.stringify({
         avatar: data.avatar
       })
@@ -68,29 +83,38 @@ export class Api {
   }
 
   //Удаление карточки
-  deleteCard(data) {
+  deleteCard(data, token) {
     return fetch(`${this._url}/cards/${data}`, {
       method: 'DELETE',
-      credentials: 'include',
-      headers: this._headers
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    }
     }).then(this._checkError)
   }
 
-  //Удалить лайк
-  deleteLike(data) {
+  // //Удалить лайк
+  deleteLike(data, token) {
     return fetch(`${this._url}/cards/likes/${data._id}`, {
       method: 'DELETE',
-      credentials: 'include',
-      headers: this._headers,
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    },
     }).then(this._checkError)
   }
 
-  //Добваить лайк
-  setLike(data) {
+  // //Добваить лайк
+  setLike(data, token) {
     return fetch(`${this._url}/cards/likes/${data._id}`, {
       method: 'PUT',
-      credentials: 'include',
-      headers: this._headers,
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    },
     }).then(this._checkError)
   }
 
@@ -104,11 +128,14 @@ export class Api {
   // }
 
   //Проверка постановки лайка
-  changeLikeCardStatus(data, isNotLiked) {
-    return fetch(`${this._url}/cards/likes/${data}`, {
+  changeLikeCardStatus(data, isNotLiked, token) {
+    return fetch(`${this._url}/cards/${data}/likes`, {
       method: isNotLiked ? "PUT" : "DELETE",
-      credentials: 'include',
-      headers: this._headers,
+      // credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+    },
     })
       .then(this._checkError)
   }

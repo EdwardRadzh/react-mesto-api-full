@@ -1,27 +1,27 @@
 export const BASE_URL = 'https://api.radzhabov.students.nomoredomains.monster';
 
-export const logout = (token) => {
-    return fetch(`${BASE_URL}/logout`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json',
-            'Content-type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        }
-    })
-    .then((res) => {
-        if (res.ok) {
-            return res.json;
-        }
-        return Promise.reject(`Ошибка: ${res.status}`)
-    })
-}
+// export const logout = (token) => {
+//     return fetch(`${BASE_URL}/logout`, {
+//         method: 'POST',
+//         credentials: 'include',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-type': 'application/json',
+//             'Authorization': `Bearer ${token}`,
+//         }
+//     })
+//     .then((res) => {
+//         if (res.ok) {
+//             return res.json;
+//         }
+//         return Promise.reject(`Ошибка: ${res.status}`)
+//     })
+// }
 
 export const register = (email, password) => {
     return fetch(`${BASE_URL}/signup`, {
         method: 'POST',
-        credentials: 'include',
+        // credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-type': 'application/json'
@@ -43,7 +43,7 @@ export const register = (email, password) => {
 export const authorize = (email, password) => {
     return fetch(`${BASE_URL}/signin`, {
         method: 'POST',
-        credentials: 'include',
+        // credentials: 'include',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -70,27 +70,43 @@ export const authorize = (email, password) => {
     })
 }
 
-export const checkToken = (token) => {
+// export const checkToken = (token) => {
+//     return fetch(`${BASE_URL}/users/me`, {
+//         method: 'GET',
+//         headers: {
+//             'Accept': "application/json",
+//             "Content-Type": "application/json",
+//             "Authorization" : `Bearer ${token}`,
+//         }
+//     })
+//     .then((response) => {
+//         if(response.ok) {
+//             return response.json();
+//         }
+//         if(response.status === 400) {
+//             throw new Error("токен не передан или передан не в том формате");
+//         }
+//         if(response.status === 401) {
+//             throw new Error("переданный токен некорректен");
+//         }
+//     })
+//     .then((data) => {
+//         return data;
+//     })
+// }
+export const getContent = token => {
     return fetch(`${BASE_URL}/users/me`, {
-        method: 'GET',
-        headers: {
-            'Accept': "application/json",
-            "Content-Type": "application/json",
-            "Authorization" : `Bearer ${token}`,
-        }
+    //   credentials: 'include',
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization" : `Bearer ${token}`
+      }
     })
     .then((response) => {
-        if(response.ok) {
+        if (response.ok) {
             return response.json();
         }
-        if(response.status === 400) {
-            throw new Error("токен не передан или передан не в том формате");
-        }
-        if(response.status === 401) {
-            throw new Error("переданный токен некорректен");
-        }
+        return Promise.reject(`Ошибка: ${response.status}`)
     })
-    .then((data) => {
-        return data;
-    })
-}
+  }

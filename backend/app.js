@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const { errors, celebrate, Joi } = require('celebrate');
 const helmet = require('helmet');
 // const cors = require('cors');
@@ -20,6 +20,7 @@ const app = express();
 
 // app.use(cors());
 const allowedCors = [
+  'localhost:3000',
   'http://localhost:3000',
   'https://radzhabov.students.nomoredomains.monster',
   'http://radzhabov.students.nomoredomains.monster',
@@ -48,7 +49,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+// app.use(cookieParser());
 
 app.use(helmet());
 app.use(requestLogger);
