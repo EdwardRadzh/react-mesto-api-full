@@ -36,118 +36,53 @@ function App() {
 
     const [loginState, setLoginState] = React.useState(false);
 
-    const [userData, setUserData] = React.useState({});
+    const [userData, setUserData] = React.useState('');
 
     const [email, setEmail] = React.useState('');
 
     const [isInfoTooltip, setInfoTooltip] = React.useState({isOpen: false, successful: false});
 
-    // function handleTokenCheck() {
-    //     const token = localStorage.getItem('jwt');
-    //     if (token) {
-    //         auth.checkToken(token)
-    //         .then((data) => {
-    //             setLoggedIn(true)
-    //             setEmail(data.email)
-    //             history.push('/');
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         history.push("/sign-in");
-    //         })
-    //     }
-    // }
 
-    // React.useEffect(() => {
-    //     handleTokenCheck();
-    // }, []);
-
-    // React.useEffect(() => {
-    //     Promise.all([api.getUserInfo(), api.getCards()])
-    //         .then(([userInfo, cardList]) => {
-    //             setCurrentUser(userInfo);
-    //             setCards(cardList)
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         })
-    // }, [loggedIn]);
-
-    React.useEffect(() => {
-        const jwt = localStorage.getItem('jwt');
-
-        if (jwt) {
-            auth.checkToken(jwt)
-                .then((res) => {
-                    if (res) {
-                        setLoggedIn(true);
-                        setEmail(res.email);
-                        history.push('/');
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-    }, [history]);
-
-    React.useEffect(() => {
-        if (loggedIn) {
-            api.getCards(localStorage.jwt)
-                    .then((cards) => {
-                        setCards(cards);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-        }
-    }, [loggedIn]);
-
-    React.useEffect(() => {
-        if (loggedIn) {
-            api.getUserInfo(localStorage.jwt)
-                .then((data) => {
-                    setCurrentUser(data);
-                })
-                .catch((err) => console.log(err));
-        }
-    }, [loggedIn]);
+    // отрисовать карточки и информацию о пользователе с сервера
+  React.useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      return;
+    }
+    api.getHeader(token)
+    api.getInitialData()
+      .then(([user, cards]) => {
+        setCurrentUser(user);
+        setCards(cards.reverse());
+      })
+      .catch((err) => console.log(err));
+  }, [loggedIn])
 
 
+  React.useEffect(() => {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
 
+      auth.checkToken(jwt)
+        .then((res) => {
+          if(res) {
+            setLoggedIn(true);
+            setUserData(res.email);
+          }
+        })
+        .catch((err) => {
+          console.log(`Произошла ошибка: ${err}`);
+        });
+    }
+  }, [history, loggedIn]);
 
-    
+  React.useEffect(() => {
+    if (loggedIn) {
+      history.push('/');
+    }
+  }, [history, loggedIn]);
 
-    // React.useEffect(() => {
-    //     const jwt = localStorage.getItem('jwt');
-
-    //     if (jwt) {
-    //         auth.getContent(jwt)
-    //             .then((res) => {
-    //                 setEmail(res.email);
-    //                 setLoggedIn(true);
-    //                 history.push('/');
-    //             })
-    //             .catch((err) => {
-    //                 console.log(err);
-    //             });
-    //     }
-    // }, [loggedIn, history]);
-
-    // React.useEffect(() => {
-    //     const jwt = localStorage.getItem('jwt');
-    //     if (jwt) {
-    //         auth.getContent(jwt).then((res) => {
-    //             if (res) {
-    //                 setEmail(res.email);
-    //             }
-    //             setLoggedIn(true);
-    //             history.push('/');
-    //         })
-    //             .catch(err => console.log(err))
-    //     }
-    // }, [loggedIn, history])
-
+  // разлогиниться
     function signOut() {
     localStorage.removeItem('jwt');
     setLoggedIn(false);
@@ -156,40 +91,19 @@ function App() {
     history.push("/sign-in");
     }
 
-
-
-    //при загрузке если получаем пользователя то перенаправляем его
-//   React.useEffect(() => {
-//     api.getUserInfo()
-//       .then(data => {
-//         handleLoginState();
-//         // setEmail(data.email);
-//         setCurrentUser(data);
-//         history.push('/');
-//       })
-//       .catch(err => {
-//         console.log(err);
-//       })
-//   }, [history, loggedIn]);
-
     //поставить/снять лайк
     function handleCardLike(card) {
-        
             
-            const isLiked = card.likes.some(i => i._id === currentUser._id);
-            
-            console.log(currentUser._id);
+            const isLiked = card.likes.some(i => i === currentUser._id);
          
             api.changeLikeCardStatus(card._id, !isLiked)
                 .then((newCard) => {
                     setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-                    console.log(newCard);
                 })
                 .catch(err => {
                     console.log(err);
             });
-        
-    }
+    };
 
     //удалить карточку
     function handleCardDelete(card) {
@@ -197,7 +111,7 @@ function App() {
             
             api.deleteCard(card._id)
             .then(() => {
-                const newCards = cards.filter((item) => item !== card._id);
+                const newCards = cards.filter((item) => item._id !== card._id);
                 setCards(newCards);
                 closeAllPopups()
             })
@@ -205,28 +119,28 @@ function App() {
                 console.log(err);
         });
         
-    }
+    };
 
     function handleEditProfileClick() {
         setIsProfilePopupOpenClose(true);
-    }
+    };
     function handleAddPlaceClick() {
         setIsCardPopupOpenClose(true);
-    }
+    };
     function handleEditAvatarClick() {
         setIsAvatarPopupOpenClose(true);
-    }
+    };
     function closeAllPopups() {
         setIsAvatarPopupOpenClose(false);
         setIsProfilePopupOpenClose(false);
         setIsCardPopupOpenClose(false);
         setSelectedCard({ name: '', link: '' });
         setInfoTooltip(false);
-    }
+    };
 
     function handleCardClick(selectedCard) {
         setSelectedCard({ name: selectedCard.name, link: selectedCard.link });
-    }
+    };
 
     function handleUpdateUser(data) {
     
@@ -243,54 +157,53 @@ function App() {
                     setSaving(false)
             })
         
-    }
+    };
 
+    // изменить аватар
     function handleUpdateAvatar(data) {
-        
-            setSaving(true)
-            api.setUserAvatar(data)
-                .then((res) => {
-                    setCurrentUser(res);
-                    closeAllPopups()
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-                .finally(() => {
-                    setSaving(false)
+        setSaving(true)
+        api.setUserAvatar(data)
+            .then((res) => {
+                setCurrentUser(res);
+                closeAllPopups()
             })
-        
-    }
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                setSaving(false)
+        })
+    };
 
+    // добавить карточку
     function handleAddPlaceSubmit(data) {
-        
-            setSaving(true)
-            api.postCard(data)
-                .then((newCard) => {
-                    setCards([newCard, ...cards]);
-                    closeAllPopups();
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-                .finally(() => {
-                    setSaving(false)
+        setSaving(true)
+        api.postCard(data)
+            .then((newCard) => {
+                setCards([newCard, ...cards]);
+                closeAllPopups();
             })
-        
-    }
+            .catch((err) => {
+                console.log(err);
+            })
+            .finally(() => {
+                setSaving(false)
+        }) 
+    };
 
     function clickOnOverlayClose(evt) {
         if (evt.target === evt.currentTarget) {
             closeAllPopups();
         }
-    }
+    };
 
+    // авторизация
     function handleLogin({ email, password }) {
         return auth.authorize(email, password)
           .then((res) => {
             if (res.token) {
-              setEmail(email);
               setLoggedIn(true);
+              setUserData(res.email);
               localStorage.setItem('jwt', res.token)
               history.push('/');
             } else {
@@ -301,16 +214,18 @@ function App() {
             console.log(err);
             handleInfoTooltip(false)
         });
-    }
+    };
 
     function handleInfoTooltip(result) {
         setInfoTooltip({...isInfoTooltip, isOpen: true, successful: result});
-    }
+    };
     
+    // регистрация
     function handleRegister({ email, password }) {
         return auth.register(email, password)
         .then((res) => {
             if(res) {
+                setUserData(res.email)
                 handleInfoTooltip(true);
                 history.push('/sign-in')
             }
@@ -319,22 +234,11 @@ function App() {
             console.log(err);
             handleInfoTooltip(false)
         })
-    }
+    };
 
     function handleLoginState(state) {
     setLoginState(state);
-    }
-
-    // React.useEffect(() => {
-    //     api.getUserInfo()
-    //       .then(data => {
-    //         setCurrentUser(data);
-    //       })
-    //       .catch(err => {
-    //         console.log(err);
-    //       })
-    // }, []);
-
+    };
 
     return (
         <CurrentUserContext.Provider value={currentUser}>

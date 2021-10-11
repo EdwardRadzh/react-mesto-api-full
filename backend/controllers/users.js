@@ -23,18 +23,9 @@ const login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         { expiresIn: '7d' },
       );
-      // res
-      //   .cookie('jwt', token, {
-      //     maxAge: 3600000 * 24 * 7,
-      //     httpOnly: true,
-      //   });
       return res.status(200).send({ token });
     })
     .catch(next);
-};
-
-const logout = (req, res) => {
-  res.clearCookie('jwt').send();
 };
 
 const getUsers = (req, res, next) => {
@@ -158,5 +149,4 @@ module.exports = {
   updateUser,
   updateAvatar,
   getCurrentUser,
-  logout,
 };

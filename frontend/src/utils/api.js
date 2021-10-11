@@ -22,7 +22,6 @@ export class Api {
   //Загрузка информации о пользователе с сервера
   getUserInfo() {
     return fetch(`${this._url}/users/me`, {
-      // credentials: 'include',
       headers: this.getHeader(),
     })
     .then(this._checkError)
@@ -31,16 +30,19 @@ export class Api {
   //Загрузка карточек с сервера
   getCards() {
     return fetch(`${this._url}/cards`, {
-      // credentials: 'include',
       headers: this.getHeader(),
     }).then(this._checkError)
+  }
+
+  // загрузка основной информации с сервера
+  getInitialData() {
+    return Promise.all([this.getUserInfo(), this.getCards()]);
   }
 
   //Редактирование профиля
   setUserInfoChanges(data) {
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
-      // credentials: 'include',
       headers: this.getHeader(),
       body: JSON.stringify({
         name: data.name,
@@ -53,7 +55,6 @@ export class Api {
   postCard(data) {
     return fetch(`${this._url}/cards`, {
       method: 'POST',
-      // credentials: 'include',
       headers: this.getHeader(),
       body: JSON.stringify({
         name: data.name,
@@ -66,7 +67,6 @@ export class Api {
   setUserAvatar(data) {
     return fetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
-      // credentials: 'include',
       headers: this.getHeader(),
       body: JSON.stringify({
         avatar: data.avatar
@@ -78,7 +78,6 @@ export class Api {
   deleteCard(data) {
     return fetch(`${this._url}/cards/${data}`, {
       method: 'DELETE',
-      // credentials: 'include',
       headers: this.getHeader(),
     }).then(this._checkError)
   }
@@ -87,7 +86,6 @@ export class Api {
   deleteLike(data) {
     return fetch(`${this._url}/cards/${data}/likes`, {
       method: 'DELETE',
-      // credentials: 'include',
       headers: this.getHeader(),
     }).then(this._checkError)
   }
@@ -96,25 +94,14 @@ export class Api {
   // setLike(data, token) {
   //   return fetch(`${this._url}/cards/${data}/likes`, {
   //     method: 'PUT',
-  //     // credentials: 'include',
   //     headers: this.getHeader(),
   //   }).then(this._checkError)
-  // }
-
-  //Проверка постановки лайка
-  // changeLikeCardStatus(card, isLikes) {
-  //   if (isLikes) {
-  //     return this.setLike(card);
-  //   } else {
-  //     return this.deleteLike(card);
-  //   }
   // }
 
   //Проверка постановки лайка
   changeLikeCardStatus(data, isNotLiked) {
     return fetch(`${this._url}/cards/${data}/likes`, {
       method: isNotLiked ? "PUT" : "DELETE",
-      // credentials: 'include',
       headers: this.getHeader(),
     })
       .then(this._checkError)

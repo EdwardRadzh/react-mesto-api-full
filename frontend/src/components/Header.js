@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 function Header(props) {
     const { loggedIn, onSignOut, userData, loginState } = props;
-    const email = userData ? userData.email : "";
+    const email = userData ? userData : "";
     
     return (
         <header className="header">
