@@ -70,43 +70,43 @@ export const authorize = (email, password) => {
     })
 }
 
-// export const checkToken = (token) => {
-//     return fetch(`${BASE_URL}/users/me`, {
-//         method: 'GET',
-//         headers: {
-//             'Accept': "application/json",
-//             "Content-Type": "application/json",
-//             "Authorization" : `Bearer ${token}`,
-//         }
-//     })
-//     .then((response) => {
-//         if(response.ok) {
-//             return response.json();
-//         }
-//         if(response.status === 400) {
-//             throw new Error("токен не передан или передан не в том формате");
-//         }
-//         if(response.status === 401) {
-//             throw new Error("переданный токен некорректен");
-//         }
-//     })
-//     .then((data) => {
-//         return data;
-//     })
-// }
-export const getContent = token => {
+export const checkToken = (token) => {
     return fetch(`${BASE_URL}/users/me`, {
-    //   credentials: 'include',
-      method: 'GET',
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization" : `Bearer ${token}`
-      }
+        method: 'GET',
+        headers: {
+            'Accept': "application/json",
+            "Content-Type": "application/json",
+            "Authorization" : `Bearer ${token}`,
+        }
     })
     .then((response) => {
-        if (response.ok) {
+        if(response.ok) {
             return response.json();
         }
-        return Promise.reject(`Ошибка: ${response.status}`)
+        if(response.status === 400) {
+            throw new Error("токен не передан или передан не в том формате");
+        }
+        if(response.status === 401) {
+            throw new Error("переданный токен некорректен");
+        }
     })
-  }
+    .then((data) => {
+        return data;
+    })
+}
+// export const getContent = token => {
+//     return fetch(`${BASE_URL}/users/me`, {
+//     //   credentials: 'include',
+//       method: 'GET',
+//       headers: {
+//         "Content-Type": "application/json",
+//         "Authorization" : `Bearer ${token}`
+//       }
+//     })
+//     .then((response) => {
+//         if (response.ok) {
+//             return response.json();
+//         }
+//         return Promise.reject(`Ошибка: ${response.status}`)
+//     })
+//   }

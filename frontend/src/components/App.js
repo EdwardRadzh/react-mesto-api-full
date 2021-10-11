@@ -42,25 +42,81 @@ function App() {
 
     const [isInfoTooltip, setInfoTooltip] = React.useState({isOpen: false, successful: false});
 
-    function handleTokenCheck() {
-        const token = localStorage.getItem('jwt');
-        if (token) {
-            auth.checkToken(token)
-            .then((data) => {
-                setLoggedIn(true)
-                setEmail(data.email)
-                history.push('/');
-            })
-            .catch((err) => {
-                console.log(err);
-            history.push("/signin");
-            })
-        }
-    }
+    // function handleTokenCheck() {
+    //     const token = localStorage.getItem('jwt');
+    //     if (token) {
+    //         auth.checkToken(token)
+    //         .then((data) => {
+    //             setLoggedIn(true)
+    //             setEmail(data.email)
+    //             history.push('/');
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         history.push("/sign-in");
+    //         })
+    //     }
+    // }
+
+    // React.useEffect(() => {
+    //     handleTokenCheck();
+    // }, []);
+
+    // React.useEffect(() => {
+    //     Promise.all([api.getUserInfo(), api.getCards()])
+    //         .then(([userInfo, cardList]) => {
+    //             setCurrentUser(userInfo);
+    //             setCards(cardList)
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         })
+    // }, [loggedIn]);
 
     React.useEffect(() => {
-    handleTokenCheck();
-    }, []);
+        const jwt = localStorage.getItem('jwt');
+
+        if (jwt) {
+            auth.checkToken(jwt)
+                .then((res) => {
+                    if (res) {
+                        setLoggedIn(true);
+                        setEmail(res.email);
+                        history.push('/');
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+    }, [history]);
+
+    React.useEffect(() => {
+        if (loggedIn) {
+            api.getCards(localStorage.jwt)
+                    .then((cards) => {
+                        setCards(cards);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+        }
+    }, [loggedIn]);
+
+    React.useEffect(() => {
+        if (loggedIn) {
+            api.getUserInfo(localStorage.jwt)
+                .then((data) => {
+                    setCurrentUser(data);
+                })
+                .catch((err) => console.log(err));
+        }
+    }, [loggedIn]);
+
+
+
+
+    
 
     // React.useEffect(() => {
     //     const jwt = localStorage.getItem('jwt');
@@ -97,19 +153,10 @@ function App() {
     setLoggedIn(false);
     setCards([]);
     setCurrentUser({})
-    history.push("/signin");
+    history.push("/sign-in");
     }
 
-    React.useEffect(() => {
-        Promise.all([api.getUserInfo(), api.getCards()])
-            .then(([userInfo, cardList]) => {
-                setCurrentUser(userInfo);
-                setCards(cardList)
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, [loggedIn]);
+
 
     //при загрузке если получаем пользователя то перенаправляем его
 //   React.useEffect(() => {
@@ -127,24 +174,28 @@ function App() {
 
     //поставить/снять лайк
     function handleCardLike(card) {
-        if (loggedIn) {
-            const jwt = localStorage.getItem('jwt');
+        
+            
             const isLiked = card.likes.some(i => i._id === currentUser._id);
-            api.changeLikeCardStatus(card._id, !isLiked, jwt)
+            
+            console.log(currentUser._id);
+         
+            api.changeLikeCardStatus(card._id, !isLiked)
                 .then((newCard) => {
                     setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+                    console.log(newCard);
                 })
                 .catch(err => {
                     console.log(err);
             });
-        }
+        
     }
 
     //удалить карточку
     function handleCardDelete(card) {
-        if (loggedIn) {
-            const jwt = localStorage.getItem('jwt');
-            api.deleteCard(card._id, jwt)
+        
+            
+            api.deleteCard(card._id)
             .then(() => {
                 const newCards = cards.filter((item) => item !== card._id);
                 setCards(newCards);
@@ -153,7 +204,7 @@ function App() {
             .catch(err => {
                 console.log(err);
         });
-        }
+        
     }
 
     function handleEditProfileClick() {
@@ -178,7 +229,7 @@ function App() {
     }
 
     function handleUpdateUser(data) {
-        if (loggedIn){
+    
             setSaving(true)
             api.setUserInfoChanges(data)
                 .then((res) => {
@@ -191,11 +242,11 @@ function App() {
                 .finally(() => {
                     setSaving(false)
             })
-        }
+        
     }
 
     function handleUpdateAvatar(data) {
-        if (loggedIn) {
+        
             setSaving(true)
             api.setUserAvatar(data)
                 .then((res) => {
@@ -208,11 +259,11 @@ function App() {
                 .finally(() => {
                     setSaving(false)
             })
-        }
+        
     }
 
     function handleAddPlaceSubmit(data) {
-        if (loggedIn) {
+        
             setSaving(true)
             api.postCard(data)
                 .then((newCard) => {
@@ -225,7 +276,7 @@ function App() {
                 .finally(() => {
                     setSaving(false)
             })
-        }
+        
     }
 
     function clickOnOverlayClose(evt) {
@@ -261,7 +312,7 @@ function App() {
         .then((res) => {
             if(res) {
                 handleInfoTooltip(true);
-                history.push('/signin')
+                history.push('/sign-in')
             }
         })
         .catch((err) => {
@@ -297,12 +348,12 @@ function App() {
 
             <Switch>
 
-                <Route path="/signin">
+                <Route path="/sign-in">
                     <Login onLogin={handleLogin}
                     onLoginState={handleLoginState}/>
                 </Route>
 
-                <Route path="/signup">
+                <Route path="/sign-up">
                     <Register 
                     onLoginState={handleLoginState}
                     onRegister={handleRegister}
@@ -326,7 +377,7 @@ function App() {
                     {loggedIn ? (
                     <Redirect to="/" />
                     ) : (
-                    <Redirect to="/signin" />
+                    <Redirect to="/sign-in" />
                     )}
                 </Route>
 

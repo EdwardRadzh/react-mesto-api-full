@@ -4,6 +4,14 @@ export class Api {
     this._headers = options.headers;
   }
 
+  getHeader() {
+    const token = localStorage.getItem('jwt');
+    return {
+        ...this._headers,
+        Authorization: `Bearer ${token}`,
+    }
+}
+
   _checkError(res) {
     if (!res.ok) {
       return Promise.reject(`Error: ${res.status}`);
@@ -12,38 +20,28 @@ export class Api {
   }
 
   //Загрузка информации о пользователе с сервера
-  getUserInfo(token) {
+  getUserInfo() {
     return fetch(`${this._url}/users/me`, {
-      method: 'GET',
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    }
-    }).then(this._checkError)
+      headers: this.getHeader(),
+    })
+    .then(this._checkError)
   }
 
   //Загрузка карточек с сервера
-  getCards(token) {
+  getCards() {
     return fetch(`${this._url}/cards`, {
-      method: 'GET',
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    }
+      headers: this.getHeader(),
     }).then(this._checkError)
   }
 
   //Редактирование профиля
-  setUserInfoChanges(data, token) {
+  setUserInfoChanges(data) {
     return fetch(`${this._url}/users/me`, {
       method: 'PATCH',
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    },
+      headers: this.getHeader(),
       body: JSON.stringify({
         name: data.name,
         about: data.about
@@ -52,14 +50,11 @@ export class Api {
   }
 
   //Добавление новой карточки
-  postCard(data, token) {
+  postCard(data) {
     return fetch(`${this._url}/cards`, {
       method: 'POST',
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    },
+      headers: this.getHeader(),
       body: JSON.stringify({
         name: data.name,
         link: data.link
@@ -68,14 +63,11 @@ export class Api {
   }
 
   //Обновление аватара пользователя
-  setUserAvatar(data, token) {
+  setUserAvatar(data) {
     return fetch(`${this._url}/users/me/avatar`, {
       method: 'PATCH',
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    },
+      headers: this.getHeader(),
       body: JSON.stringify({
         avatar: data.avatar
       })
@@ -83,40 +75,31 @@ export class Api {
   }
 
   //Удаление карточки
-  deleteCard(data, token) {
+  deleteCard(data) {
     return fetch(`${this._url}/cards/${data}`, {
       method: 'DELETE',
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    }
+      headers: this.getHeader(),
     }).then(this._checkError)
   }
 
   // //Удалить лайк
-  deleteLike(data, token) {
-    return fetch(`${this._url}/cards/likes/${data._id}`, {
+  deleteLike(data) {
+    return fetch(`${this._url}/cards/${data}/likes`, {
       method: 'DELETE',
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    },
+      headers: this.getHeader(),
     }).then(this._checkError)
   }
 
-  // //Добваить лайк
-  setLike(data, token) {
-    return fetch(`${this._url}/cards/likes/${data._id}`, {
-      method: 'PUT',
-      // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    },
-    }).then(this._checkError)
-  }
+  // // //Добваить лайк
+  // setLike(data, token) {
+  //   return fetch(`${this._url}/cards/${data}/likes`, {
+  //     method: 'PUT',
+  //     // credentials: 'include',
+  //     headers: this.getHeader(),
+  //   }).then(this._checkError)
+  // }
 
   //Проверка постановки лайка
   // changeLikeCardStatus(card, isLikes) {
@@ -128,14 +111,11 @@ export class Api {
   // }
 
   //Проверка постановки лайка
-  changeLikeCardStatus(data, isNotLiked, token) {
+  changeLikeCardStatus(data, isNotLiked) {
     return fetch(`${this._url}/cards/${data}/likes`, {
       method: isNotLiked ? "PUT" : "DELETE",
       // credentials: 'include',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-    },
+      headers: this.getHeader(),
     })
       .then(this._checkError)
   }
