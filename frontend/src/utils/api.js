@@ -22,6 +22,7 @@ export class Api {
   //Загрузка информации о пользователе с сервера
   getUserInfo() {
     return fetch(`${this._url}/users/me`, {
+      method: 'GET',
       headers: this.getHeader(),
     })
     .then(this._checkError)
@@ -30,6 +31,7 @@ export class Api {
   //Загрузка карточек с сервера
   getCards() {
     return fetch(`${this._url}/cards`, {
+      method: 'GET',
       headers: this.getHeader(),
     }).then(this._checkError)
   }
