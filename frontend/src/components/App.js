@@ -9,7 +9,7 @@ import ImagePopup from './ImagePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import EditProfilePopup from './EditProfilePopup';
 import AddPlacePopup from './AddPlacePopup';
-import ConfirmDeleteCardPopup from './ConfirmDeleteCardPopup';
+// import ConfirmDeleteCardPopup from './ConfirmDeleteCardPopup';
 import Login from './Login';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
@@ -37,8 +37,6 @@ function App() {
     const [loginState, setLoginState] = React.useState(false);
 
     const [userData, setUserData] = React.useState('');
-
-    const [email, setEmail] = React.useState('');
 
     const [isInfoTooltip, setInfoTooltip] = React.useState({isOpen: false, successful: false});
 
