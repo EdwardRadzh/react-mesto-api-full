@@ -14,7 +14,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const linkRegExp = require('./constants/linkRegExp');
 const NotFound = require('./errors/NotFound');
 
-const { PORT = 3000 } = process.env;
+
 const app = express();
 // app.use(cors());
 
@@ -43,6 +43,8 @@ app.use((req, res, next) => {
 
   next();
 });
+
+const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
