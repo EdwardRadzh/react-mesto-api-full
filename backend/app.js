@@ -14,8 +14,8 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const linkRegExp = require('./constants/linkRegExp');
 const NotFound = require('./errors/NotFound');
 
-
 const app = express();
+const { PORT = 3000 } = process.env;
 // app.use(cors());
 
 const allowedCors = [
@@ -44,8 +44,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const { PORT = 3000 } = process.env;
-
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
@@ -53,8 +51,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(helmet());
 app.use(requestLogger);
-
-
 
 app.get('/crash-test', () => {
   setTimeout(() => {
